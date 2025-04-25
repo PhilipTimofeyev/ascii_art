@@ -7,3 +7,9 @@ gemspec
 
 gem "irb"
 gem "rake", "~> 13.0"
+
+gem "mini_magick", "~> 5.2"
+
+gem "rubocop", "~> 1.75"
+
+gem "rspec", "~> 3.13"
