@@ -13,8 +13,11 @@ module AsciiArt
   puts 'Successfully constructed pixel matrix!'
   puts "Pixel matrix size: #{length} x #{width}"
 
-  puts 'Iterating through pixel contents'
+  puts 'Iterating through pixel brightness'
   image.get_pixels.each do |group|
-    group.each { |pixel| p pixel }
+    group.each do |pixel|
+      pixel_average = pixel.sum / pixel.length
+      p pixel_average
+    end
   end
 end
