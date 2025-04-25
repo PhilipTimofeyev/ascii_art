@@ -10,6 +10,11 @@ module AsciiArt
 
   length, width = image.dimensions
 
-  puts 'Successfully loaded image!'
-  puts "Image size: #{length} x #{width}"
+  puts 'Successfully constructed pixel matrix!'
+  puts "Pixel matrix size: #{length} x #{width}"
+
+  puts 'Iterating through pixel contents'
+  image.get_pixels.each do |group|
+    group.each { |pixel| p pixel }
+  end
 end
