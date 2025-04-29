@@ -20,8 +20,8 @@ module AsciiArt
 
   ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
 
-  image = MiniMagick::Image.open('images/jason.jpg')
-  image.resize '500x375'
+  image = MiniMagick::Image.open('images/ascii-pineapple.jpg')
+  image.resize '1699'
 
   length, width = image.dimensions
 
@@ -30,12 +30,15 @@ module AsciiArt
 
   puts 'Building ASCII image..'
   divisor = (255.0 / ASCII_BRIGHTNESS.length)
+  result = []
+
   image.get_pixels.each do |group|
     row = group.map do |pixel|
-      pixel_average = luminosity(pixel)
+      pixel_average = average(pixel)
       ascii = ASCII_BRIGHTNESS[(pixel_average / divisor).round - 1]
-      ascii * 3
+      ascii * 2
     end
-    puts row.join
+    result << row.join
   end
+  File.write('new_file.txt', result.join("\n"))
 end
