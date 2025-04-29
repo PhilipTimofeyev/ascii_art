@@ -3,8 +3,11 @@ require 'mini_magick'
 class Image
   ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'.reverse
 
+  attr_reader :filename
+
   def initialize(path)
     @image = MiniMagick::Image.open(path)
+    @filename = File.basename(path, '.*')
   end
 
   def resize_image

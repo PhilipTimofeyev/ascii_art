@@ -45,7 +45,11 @@ module AsciiArt
   algo_int = options[:algo].to_i
   algo = RgbBrightness.get_algo(algo_int)
 
-  # build and write image
+  # Create output directory if it doesn't exist
+  directory_name = 'output'
+  Dir.mkdir(directory_name) unless File.exist?(directory_name)
+
+  # write image to output
   ascii_image = image.build_ascii_image(algo)
-  File.write('ascii_image.txt', ascii_image.join("\n"))
+  File.write("output/#{image.filename}_ascii.text", ascii_image.join("\n"))
 end
