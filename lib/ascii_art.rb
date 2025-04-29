@@ -1,23 +1,15 @@
 # frozen_string_literal: true
 
 require_relative 'ascii_art/version'
-require 'mini_magick'
 require 'optparse'
+require_relative 'rgb_brightness'
+require_relative 'process_image'
 
-def luminosity(pixel)
-  (0.21 * pixel[0] + 0.72 * pixel[1] + 0.07 * pixel[2]) / 3
-end
-
-def lightness(pixel)
-  (pixel.max + pixel.min) / 2
-end
-
-def average(pixel)
-  pixel.sum / 3
-end
-
+# Creates ASCII Art
 module AsciiArt
   class Error < StandardError; end
+  include RgbBrightness
+  # include ProcessImage
 
   options = { algo: '1' }
 
@@ -45,31 +37,15 @@ module AsciiArt
 
   puts "Processing file: #{options[:path]} using #{options[:algo]}"
 
-  algos = { 1 => method(:average), 2 => method(:lightness), 3 => method(:luminosity) }
+  # Open and resize image
+  image = Image.new(options[:path])
+  image.resize_image
 
-  ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'.reverse
+  # Retrieve requested brightness algo
+  algo_int = options[:algo].to_i
+  algo = RgbBrightness.get_algo(algo_int)
 
-  image = MiniMagick::Image.open(options[:path])
-  image.resize '1699'
-
-  length, width = image.dimensions
-
-  puts 'Successfully constructed pixel matrix!'
-  puts "Pixel matrix size: #{length} x #{width}"
-
-  puts 'Building ASCII image..'
-  divisor = (255.0 / ASCII_BRIGHTNESS.length)
-  result = []
-
-  algo = options[:algo].to_i
-
-  image.get_pixels.each do |group|
-    row = group.map do |pixel|
-      pixel_average = algos[algo].call(pixel)
-      ascii = ASCII_BRIGHTNESS[(pixel_average / divisor).round - 1]
-      ascii * 2
-    end
-    result << row.join
-  end
-  File.write('ascii_image.txt', result.join("\n"))
+  # build and write image
+  ascii_image = image.build_ascii_image(algo)
+  File.write('ascii_image.txt', ascii_image.join("\n"))
 end
