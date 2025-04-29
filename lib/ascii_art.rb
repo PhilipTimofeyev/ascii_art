@@ -19,7 +19,7 @@ end
 module AsciiArt
   class Error < StandardError; end
 
-  options = {}
+  options = { algo: '1' }
 
   parser = OptionParser.new do |parser|
     parser.banner = "Usage: ruby #{File.basename(__FILE__)} [options] <path_to_file>"
@@ -31,14 +31,21 @@ module AsciiArt
     parser.on('-p', '--path PATH', String, 'Path to the file') do |path|
       options[:path] = path
     end
+    parser.on('-a', '--algo ALGO', String,
+              'RGB averaging method-- 1: Average, 2: Lightness, 3: Luminosity') do |path|
+      options[:algo] = path
+    end
   end.parse!
 
   if options[:path].nil?
-    puts 'Error: No file path provided.'
+    puts 'Error: Please provide a file path to jpg.'
     puts parser
     exit
   end
-  puts "Processing file: #{options[:path]}"
+
+  puts "Processing file: #{options[:path]} using #{options[:algo]}"
+
+  algos = { 1 => method(:average), 2 => method(:lightness), 3 => method(:luminosity) }
 
   ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'.reverse
 
@@ -54,9 +61,11 @@ module AsciiArt
   divisor = (255.0 / ASCII_BRIGHTNESS.length)
   result = []
 
+  algo = options[:algo].to_i
+
   image.get_pixels.each do |group|
     row = group.map do |pixel|
-      pixel_average = average(pixel)
+      pixel_average = algos[algo].call(pixel)
       ascii = ASCII_BRIGHTNESS[(pixel_average / divisor).round - 1]
       ascii * 2
     end
