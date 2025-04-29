@@ -18,9 +18,9 @@ end
 module AsciiArt
   class Error < StandardError; end
 
-  ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'
+  ASCII_BRIGHTNESS = '`^",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$'.reverse
 
-  image = MiniMagick::Image.open('images/ascii-pineapple.jpg')
+  image = MiniMagick::Image.open('images/caravaggio.jpg')
   image.resize '1699'
 
   length, width = image.dimensions
@@ -40,5 +40,5 @@ module AsciiArt
     end
     result << row.join
   end
-  File.write('new_file.txt', result.join("\n"))
+  File.write('ascii_image.txt', result.join("\n"))
 end
