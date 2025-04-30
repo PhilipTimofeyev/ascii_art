@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-require_relative 'ascii_art/version'
 require 'optparse'
-require_relative 'rgb_brightness'
-require_relative 'process_image'
+
+module AsciiArt
+  require_relative 'ascii_art/version'
+  require_relative 'ascii_art/image'
+  require_relative 'ascii_art/rgb_brightness'
+end
 
 # Creates ASCII Art
 module AsciiArt
